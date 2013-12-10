@@ -108,3 +108,6 @@ fi
 
 CPLUS_INCLUDE_PATH="/home/ragi/boost":$CPLUS_INCLUDE_PATH
 export CPLUS_INCLUDE_PATH
+
+# reverseでないi-searchの有効化　ctrl+s
+stty stop undef
