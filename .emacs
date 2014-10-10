@@ -1,3 +1,5 @@
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (global-set-key "\C-h" 'delete-backward-char)
 (cond (window-system
        (global-unset-key "\C-z")
@@ -325,4 +327,6 @@
 ;; (setq twittering-mode-auth-method 'xauth)
 ;; (setq twittering-icon-mode t)
 ;; (setq twittering-timer-interval 45)
-
+(require 'w3m)
+(require 'search-web)
+(require 'dic-lookup-w3m)

@@ -60,3 +60,6 @@ setopt noflowcontrol
 
 EDITOR=/usr/local/bin/emacs-24.3
 export EDITOR
+
+alias mv="mv -i"
+alias cp="cp -i"
