@@ -1,0 +1,13 @@
+.python-environments
+.DS_Store
+ac-comphist.dat
+auto-save-list
+ddskk-15.1
+elisp
+elpa
+eshell
+image-dired
+jedi
+pycheckers.sh
+semanticdb
+tramp
