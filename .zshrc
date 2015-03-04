@@ -63,3 +63,7 @@ export EDITOR
 
 alias mv="mv -i"
 alias cp="cp -i"
+
+
+export PATH=$PATH:${HOME}/software/clang+llvm-3.5.0-macosx-apple-darwin/bin
+export PATH=$PATH:/usr/local/Cellar/nmap/6.47/bin
