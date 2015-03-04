@@ -1,3 +1,5 @@
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (global-set-key "\C-h" 'delete-backward-char)
 (cond (window-system
        (global-unset-key "\C-z")
@@ -5,18 +7,6 @@
 
 (add-to-list 'default-frame-alist '(font . "ricty-13.5"))
 
-
-(require 'auto-complete)
-(add-to-list 'ac-modes 'tex-mode)
-(add-to-list 'ac-modes 'latex-mode)
-(global-auto-complete-mode t)
-
-
-;; tex-mode
-(setq auto-mode-alist 
-      (cons (cons "\\.tex$" 'tex-mode) auto-mode-alist))
-(add-hook 'tex-mode 'auto-complete-mode)
-(autoload 'yatex-mode "latex" "Yet Another LaTeX mode" t)
 
 ;;; YaTeX
 ;; yatex-mode の起動
@@ -48,34 +38,27 @@
          (local-file  (file-relative-name
                        temp-file
                        (file-name-directory buffer-file-name))))
-    (list "g++" (list "-std=c++11" "-Wall" "-Wextra" "-fsyntax-only" local-file))))
+    (list "g++" (list "-std=c++11" "-Wall" "-Wextra" "-fsyntax-only" "-Wno-sign-compare" local-file))))
 ;    (list "g++" (list "-Wall" "-Wextra" local-file))))
 
 (push '("\\.cpp$" flymake-cc-init) flymake-allowed-file-name-masks)
 
-
-;; pythonのflymake
-(require 'flycheck-pyflakes)
-(add-hook 'python-mode-hook 'flycheck-mode)
-;; python pep8
-(add-hook 'before-save-hook 'py-autopep8-before-save)
-
-;;; flymake for python
-(add-hook 'find-file-hook 'flymake-find-file-hook)
-(when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "pycheckers.sh"  (list local-file))))
-  (add-to-list 'flymake-allowed-file-name-masks
-;;               '("\\.py\\'" flymake-pyflakes-init)))
-               '("\\.py$" flymake-pyflakes-init)))
-(load-library "flymake-cursor")
-(global-set-key [f10] 'flymake-goto-prev-error)
-(global-set-key [f11] 'flymake-goto-next-error)
+;; ;;; flymake for python
+;; (add-hook 'find-file-hook 'flymake-find-file-hook)
+;; (when (load "flymake" t)
+;;   (defun flymake-pyflakes-init ()
+;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                        'flymake-create-temp-inplace))
+;;            (local-file (file-relative-name
+;;                         temp-file
+;;                         (file-name-directory buffer-file-name))))
+;;       (list "pycheckers.sh"  (list local-file))))
+;;   (add-to-list 'flymake-allowed-file-name-masks
+;; ;;               '("\\.py\\'" flymake-pyflakes-init)))
+;;                '("\\.py$" flymake-pyflakes-init)))
+;; (load-library "flymake-cursor")
+;; (global-set-key [f10] 'flymake-goto-prev-error)
+;; (global-set-key [f11] 'flymake-goto-next-error)
 
 ;;C++ style
 (add-hook 'c++-mode-hook
@@ -103,8 +86,11 @@
 ;;(set-face-background 'flymake-warnline "orange3")
 
 (custom-set-faces
-;;  '(flymake-errline ((((class color)) (:background "Gray30"))))
-  '(flymake-warnline ((((class color)) (:background "Gray20")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flymake-warnline ((((class color)) (:background "Gray20")))))
 
 
 ;; flymake を使えない場合をチェック
@@ -132,17 +118,14 @@
 (ad-activate 'flymake-post-syntax-check)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
+ '(custom-enabled-themes (quote (misterioso)))
  '(inhibit-startup-screen nil))
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- )
+
 
 
 ;;; リージョンを削除できるように
@@ -175,6 +158,8 @@
 (push '(slime-repl-mode) popwin:special-display-config)
 ;; Connections
 (push '(slime-connection-list-mode) popwin:special-display-config)
+
+(push '("^\\*helm" :regexp t :height 10 :position :bottom) popwin:special-display-config)
 
 (require 'ac-slime)
 (add-hook 'slime-mode-hook 'set-up-slime-ac)
@@ -226,5 +211,122 @@
 ;;(define-key python-mode-map (kbd "<C-tab>") 'jedi:complete)
 (setq jedi:complete-on-dot t)
 
+;; tex用 auto-complete
+(require 'auto-complete)
+(add-to-list 'ac-modes 'tex-mode)
+(add-to-list 'ac-modes 'latex-mode)
+(global-auto-complete-mode t)
 
-      
+;; tex-mode
+(setq auto-mode-alist 
+      (cons (cons "\\.tex$" 'tex-mode) auto-mode-alist))
+(add-hook 'tex-mode 'auto-complete-mode)
+(autoload 'yatex-mode "latex" "Yet Another LaTeX mode" t)
+
+;; pythonのflymake
+(require 'flycheck-pyflakes)
+(add-hook 'python-mode-hook 'flycheck-mode)
+;; python pep8
+(add-hook 'before-save-hook 'py-autopep8-before-save)
+
+;; hiwin-mode アクティブなウィドウを目立たせる
+;;(require 'hiwin)
+;;(hiwin-mode)
+;; col-highlightとhi-line+でいらなくなったかも
+
+(iswitchb-mode 1)
+
+;; C-, と C-.でバッファを巡回する
+(setq my-ignore-buffer-list
+      '("*Help*" "*Compile-Log*" "*Mew completions*" "*Completions*"
+        "*Shell Command Output*" "*Apropos*" "*Buffer List*"))
+
+(defun my-visible-buffer (blst)
+  (let ((bufn (buffer-name (car blst))))
+    (if (or (= (aref bufn 0) ? ) (member bufn my-ignore-buffer-list))
+        (my-visible-buffer (cdr blst)) (car blst))))
+
+(defun my-grub-buffer ()
+  (interactive)
+  (switch-to-buffer (my-visible-buffer (reverse (buffer-list)))))
+
+(defun my-bury-buffer ()
+  (interactive)
+  (bury-buffer)
+  (switch-to-buffer (my-visible-buffer (buffer-list))))
+
+(global-set-key [?\C-,] 'my-grub-buffer)
+(global-set-key [?\C-.] 'my-bury-buffer)
+
+
+
+(require 'col-highlight)
+(toggle-highlight-column-when-idle t)
+(col-highlight-set-interval 10)
+
+(require 'hl-line+)
+(toggle-hl-line-when-idle t)
+(hl-line-when-idle-interval 10)
+
+(show-paren-mode t)
+(disable-theme 'misterioso)
+
+(load "gdb")
+
+;; 許されざるText is read-onlyを回避する
+(defadvice eshell-get-old-input (after eshell-read-only-korosu activate)
+  (setq ad-return-value (substring-no-properties ad-return-value)))
+
+
+;; 各種モードで折りたたみモードをONに
+;; C coding style
+(add-hook 'c-mode-hook
+          '(lambda ()
+      (hs-minor-mode 1)))
+;; C++ coding style
+(add-hook 'c++-mode-hook
+          '(lambda ()
+      (hs-minor-mode 1)))
+;; Scheme coding style
+(add-hook 'scheme-mode-hook
+          '(lambda ()
+      (hs-minor-mode 1)))
+;; Elisp coding style
+(add-hook 'emacs-lisp-mode-hook
+          '(lambda ()
+      (hs-minor-mode 1)))
+;; Lisp coding style
+(add-hook 'lisp-mode-hook
+          '(lambda ()
+      (hs-minor-mode 1)))
+;; Python coding style
+(add-hook 'python-mode-hook
+          '(lambda ()
+      (hs-minor-mode 1)))
+
+;;(setq dired-listing-switches (purecopy "-gohvBG"))
+
+(require 'rotate)
+(global-set-key (kbd "C-t") 'rotate-layout)
+(global-set-key (kbd "M-t") 'rotate-window)
+
+(eval-after-load 'flycheck
+  '(custom-set-variables
+   '(flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
+
+
+(defun eshell/clear ()
+ "Clear the current buffer, leaving one prompt at the top."
+ (interactive)
+ (let ((inhibit-read-only t))
+   (erase-buffer)))
+
+(load "myhelm")
+
+;; (require 'twittering-mode)
+;; (setq twittering-mode-auth-method 'xauth)
+;; (setq twittering-icon-mode t)
+;; (setq twittering-timer-interval 45)
+(require 'w3m)
+(require 'search-web)
+(require 'dic-lookup-w3m)
