@@ -7,6 +7,22 @@
 
 (add-to-list 'default-frame-alist '(font . "ricty-13.5"))
 
+;; Mac用フォント設定
+ ;; 英語
+ (set-face-attribute 'default nil
+             :family "Ricty" ;; font
+             :height 130)  ;; font size
+;; ;; 日本語
+;; (set-fontset-font
+;;  nil 'japanese-jisx0208
+;; ;; (font-spec :family "Hiragino Mincho Pro")) ;; font
+;;   (font-spec :family "Hiragino Kaku Gothic ProN")) ;; font
+;; ;; 半角と全角の比を1:2にしたければ
+;; (setq face-font-rescale-alist
+;; ;;        '((".*Hiragino_Mincho_pro.*" . 1.0)))
+;;       '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.0)));; Mac用フォント設定
+;; (set-language-environment 'Japanese)
+;; (prefer-coding-system 'utf-8)
 
 ;;; YaTeX
 ;; yatex-mode の起動
@@ -123,7 +139,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
- '(custom-enabled-themes (quote (misterioso)))
+ '(custom-enabled-themes (quote (sanityinc-solarized-dark)))
+ '(custom-safe-themes (quote ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
+ '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
  '(inhibit-startup-screen nil))
 
 
@@ -326,14 +344,84 @@
 ;; (setq twittering-mode-auth-method 'xauth)
 ;; (setq twittering-icon-mode t)
 ;; (setq twittering-timer-interval 45)
-(require 'w3m)
-(require 'search-web)
-(require 'dic-lookup-w3m)
+;; (require 'w3m)
+;; (require 'search-web)
+;; (require 'dic-lookup-w3m)
+
+
+
+
+
 
 (require 'init-loader)
 ;(setq init-loader-show-log-after-init nil)
 (init-loader-load "~/.emacs.d/inits")
-;(load "21-myhelm")
-;(load "50-gdb")
-;(require '21-myhelm)
-;(require '50-gdb)
+
+
+(require 'smart-compile)
+(global-set-key (kbd "C-x c") 'smart-compile)
+(global-set-key (kbd "C-x C-x") (kbd "C-x c C-m"))
+
+(setq smart-compile-alist
+      (append
+       '(("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f; ./a.out"))
+       smart-compile-alist))
+
+;; yasnippet.el----------------------------------
+(require 'yasnippet)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/mySnippets"
+        "~/.emacs.d/elpa/yasnippet-20140911.312/snippets"
+        ))
+(yas-global-mode 1)
+
+
+
+;;; プレフィクスキーはC-z
+(setq elscreen-prefix-key (kbd "C-z"))
+(elscreen-start)
+;;; タブの先頭に[X]を表示しない
+(setq elscreen-tab-display-kill-screen nil)
+;;; header-lineの先頭に[<->]を表示しない
+(setq elscreen-tab-display-control nil)
+;;; バッファ名・モード名からタブに表示させる内容を決定する(デフォルト設定)
+(setq elscreen-buffer-to-nickname-alist
+      '(("^dired-mode$" .
+         (lambda ()
+           (format "Dired(%s)" dired-directory)))
+        ("^Info-mode$" .
+         (lambda ()
+           (format "Info(%s)" (file-name-nondirectory Info-current-file))))
+        ("^mew-draft-mode$" .
+         (lambda ()
+           (format "Mew(%s)" (buffer-name (current-buffer)))))
+        ("^mew-" . "Mew")
+        ("^irchat-" . "IRChat")
+        ("^liece-" . "Liece")
+        ("^lookup-" . "Lookup")))
+(setq elscreen-mode-to-nickname-alist
+      '(("[Ss]hell" . "shell")
+        ("compilation" . "compile")
+        ("-telnet" . "telnet")
+        ("dict" . "OnlineDict")
+        ("*WL:Message*" . "Wanderlust")))
+
+
+(require 'clang-format)
+(global-set-key [C-M-tab] 'clang-format-region)
+
+(require 'open-junk-file)
+(setq open-junk-file-format "~/workspace/junk/%y%m%d/%H%M%S.")
+(global-set-key (kbd "C-x C-z") 'open-junk-file)
+
+
+;; (if window-system (progn
+;;     (set-frame-parameter nil 'alpha 70) ;透明度
+;;     ))
+
+;; 透明度を変更するコマンド M-x set-alpha
+;; http://qiita.com/marcy@github/items/ba0d018a03381a964f24
+(defun set-alpha (alpha-num)
+  "set frame parameter 'alpha"
+  (interactive "nAlpha: ")
+  (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
