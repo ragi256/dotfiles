@@ -323,6 +323,39 @@
 
 (load "myhelm")
 
+
+;;; Common Lisp用 slimeヘルパー
+  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  ;; Replace "sbcl" with the path to your implementation
+  (setq inferior-lisp-program "sbcl")
+
+;;; slime用オートコンプリートac-slime
+(require 'ac-slime)
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'slime-repl-mode))
+
+
+;;; ファイラ用リネームwdiredモード
+;;; emacs-goodies-elパッケージが必要
+(when (require 'wdired nil t)
+  ;; rキーでwdiredモードに入る
+  (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode))
+
+;;; load-pathを追加する関数を定義
+(defun add-to-load-path (&rest paths)
+  (let (path)
+    (dolist (path paths paths)
+     (let ((default-directory (expand-file-name (concat user-emacs-directory path))))
+        (add-to-list 'load-path default-directory)
+         (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+             (normal-top-level-add-subdirs-to-load-path))))))
+
+;;; ディレクトリをサブディレクトリごとload-pathに追加
+(add-to-load-path "elisp")
+
+
 ;; (require 'twittering-mode)
 ;; (setq twittering-mode-auth-method 'xauth)
 ;; (setq twittering-icon-mode t)
@@ -330,3 +363,4 @@
 (require 'w3m)
 (require 'search-web)
 (require 'dic-lookup-w3m)
+

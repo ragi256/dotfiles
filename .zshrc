@@ -3,7 +3,11 @@ setopt autopushd
 setopt pushd_ignore_dups        # 同じディレクトリは追加しない
 
 #--- zsh 用の設定 ---
-. /usr/local/etc/autojump.zsh
+
+	[[ -s /home/ragi/.autojump/etc/profile.d/autojump.sh ]] && source /home/ragi/.autojump/etc/profile.d/autojump.sh
+
+	autoload -U compinit && compinit -u
+
 
 # #--- cd 時の仕掛け ---
 # function precmd () {
@@ -19,7 +23,6 @@ setopt pushd_ignore_dups        # 同じディレクトリは追加しない
 #     ls;
 # }
 
-chpwd() { clear;echo \[`pwd`\];ls -gohvG }
 PROMPT="[%B%~${default}%b] %E
 %b%# "
 RPROMPT='[%n@%m]'
@@ -27,15 +30,17 @@ RPROMPT='[%n@%m]'
 #alias cd=cdls
 
 alias u="cd ../"
-alias ls="ls -gohvBG"
-alias emacs="emacs-24.3"
+alias ls='ls -gohvB --color=auto'
+#alias emacs="emacs-24.3"
 #cd `cat ~/.cudir`
+chpwd() { clear;echo \[`pwd`\];ls}
 
 # 履歴ファイルの保存先
 export HISTFILE=${HOME}/.zsh_history
 
 # メモリに保存される履歴の件数
-export HISTSIZE=1000
+
+  export HISTSIZE=1000
 
 # 履歴ファイルに保存される履歴の件数
 export SAVEHIST=10000000
@@ -45,12 +50,12 @@ setopt hist_ignore_dups
 
 # 開始と終了を記録
 setopt EXTENDED_HISTORY
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+#export PATH="$HOME/.rbenv/bin:$PATH"
+#Eeval "$(rbenv init -)"
 
 
-export PATH=$PATH:/Applications/Wine.app/Contents/Resources/bin
-
+#export PATH=$PATH:/Applications/Wine.app/Contents/Resources/bin
+export PATH=$PATH:/home/ragi/.cask/bin
 alias rm="trash"
 
 bindkey "^s" history-incremental-search-forward
