@@ -1,11 +1,15 @@
 # dotfiles
+
 ## enviroment
+
 ### OS
 * Ubuntu
 * MaxOSX
+
 ### editor
 * ~~vim~~
 * emacs
+
 ### shell & other
 * ~~bash~~
 * zsh
