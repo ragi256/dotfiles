@@ -1,5 +1,3 @@
-(fset 'yes-or-no-p 'y-or-n-p)
-
 (global-set-key "\C-h" 'delete-backward-char)
 (cond (window-system
        (global-unset-key "\C-z")
@@ -133,16 +131,33 @@
   (setq flymake-check-was-interrupted t))
 (ad-activate 'flymake-post-syntax-check)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
- '(custom-enabled-themes (quote (sanityinc-solarized-dark)))
- '(custom-safe-themes (quote ("4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
- '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
- '(inhibit-startup-screen nil))
+
+;; make the fringe stand out from the background
+(setq solarized-distinct-fringe-background t)
+
+;; make the modeline high contrast
+(setq solarized-high-contrast-mode-line t)
+
+;; Use less bolding
+(setq solarized-use-less-bold t)
+
+;; Use more italics
+(setq solarized-use-more-italic t)
+
+;; Use less colors for indicators such as git:gutter, flycheck and similar.
+(setq solarized-emphasize-indicators nil)
+
+;; Don't change size of org-mode headlines (but keep other size-changes)
+(setq solarized-scale-org-headlines nil)
+
+;; Avoid all font-size changes
+(setq solarized-height-minus-1 1)
+(setq solarized-height-plus-1 1)
+(setq solarized-height-plus-2 1)
+(setq solarized-height-plus-3 1)
+(setq solarized-height-plus-4 1)
+
+;(load-theme 'solarized-dark t)
 
 
 
@@ -286,10 +301,6 @@
 (toggle-hl-line-when-idle t)
 (hl-line-when-idle-interval 10)
 
-(show-paren-mode t)
-(disable-theme 'misterioso)
-
-
 ;; 許されざるText is read-onlyを回避する
 (defadvice eshell-get-old-input (after eshell-read-only-korosu activate)
   (setq ad-return-value (substring-no-properties ad-return-value)))
@@ -340,23 +351,19 @@
 
 
 
-;; (require 'twittering-mode)
-;; (setq twittering-mode-auth-method 'xauth)
-;; (setq twittering-icon-mode t)
-;; (setq twittering-timer-interval 45)
+(require 'twittering-mode)
+(setq twittering-mode-auth-method 'xauth)
+(setq twittering-icon-mode t)
+(setq twittering-timer-interval 45)
+
 ;; (require 'w3m)
+;; (require 'w3m-load)
 ;; (require 'search-web)
 ;; (require 'dic-lookup-w3m)
-
-
-
-
-
 
 (require 'init-loader)
 ;(setq init-loader-show-log-after-init nil)
 (init-loader-load "~/.emacs.d/inits")
-
 
 (require 'smart-compile)
 (global-set-key (kbd "C-x c") 'smart-compile)
@@ -374,7 +381,6 @@
         "~/.emacs.d/elpa/yasnippet-20140911.312/snippets"
         ))
 (yas-global-mode 1)
-
 
 
 ;;; プレフィクスキーはC-z
@@ -416,8 +422,10 @@
 
 
 ;; (if window-system (progn
-;;     (set-frame-parameter nil 'alpha 70) ;透明度
+;;     (set-frame-parameter nil 'alpha 80) ;透明度
 ;;     ))
+
+(add-to-list 'default-frame-alist '(alpha . (0.75 0.75)))
 
 ;; 透明度を変更するコマンド M-x set-alpha
 ;; http://qiita.com/marcy@github/items/ba0d018a03381a964f24
@@ -425,3 +433,80 @@
   "set frame parameter 'alpha"
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
+
+
+(require 'flymake-coffee)
+(add-hook 'coffee-mode-hook 'flymake-coffee-load)
+
+(defun coffee-custom ()
+  "coffee-mode-hook"
+ (set (make-local-variable 'tab-width) 2)
+ (setq coffee-tab-width 2))
+
+(add-hook 'coffee-mode-hook
+  '(lambda() (coffee-custom)))
+
+;; エスケープシーケンスを処理
+;; http://d.hatena.ne.jp/hiboma/20061031/1162277851
+(autoload 'ansi-color-for-comint-mode-on "ansi-color"
+          "Set `ansi-color-for-comint-mode' to t." t)
+(add-hook 'eshell-load-hook 'ansi-color-for-comint-mode-on)
+;; http://www.emacswiki.org/emacs-ja/EshellColor
+(require 'ansi-color)
+(require 'eshell)
+(defun eshell-handle-ansi-color ()
+  (ansi-color-apply-on-region eshell-last-output-start
+                              eshell-last-output-end))
+(add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
+
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(line-number-mode 1)
+(column-number-mode 1)
+(setq inhibit-startup-message t)
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq use-dialog-box nil)
+(show-paren-mode t)
+
+(setq kill-whole-line t)
+(setq message-log-max 10000)
+(setq history-length 1000)
+(setq history-delete-duplicates t)
+
+(which-function-mode 1)
+
+(require 'lispxmp)
+(require 'paredit)
+(require 'rainbow-delimiters)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+
+(require 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
+
+(require 'anzu)
+(global-anzu-mode +1)
+(set-face-attribute 'anzu-mode-line nil
+                    :foreground "firebrick" :weight 'bold)
+
+(require 'volatile-highlights)
+
+;; (require 'powerline)
+;; (powerline-default-theme)
+
+;;(global-set-key (kbd "C-q") 'helm-mini)
+
+(set-face-attribute 'which-func nil
+		    :foreground "black")
+
+(require 'smooth-scroll)
+(smooth-scroll-mode t)
+
+(require 'typescript)
+(add-to-list 'auto-mode-alist '("\.ts$" . typescript-mode))
+
+(defun typescript-mode-init () 
+  (set (make-local-variable 'compile-command) 
+       (format "tsc -sourcemap %s" 
+	       (file-name-nondirectory (buffer-file-name))))) 
+(add-hook 'typescript-mode-hook 'typescript-mode-init) 
