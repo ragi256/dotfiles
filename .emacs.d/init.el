@@ -361,15 +361,9 @@
 ;; (require 'search-web)
 ;; (require 'dic-lookup-w3m)
 
-
-
-
-
-
 (require 'init-loader)
 ;(setq init-loader-show-log-after-init nil)
 (init-loader-load "~/.emacs.d/inits")
-
 
 (require 'smart-compile)
 (global-set-key (kbd "C-x c") 'smart-compile)
@@ -387,7 +381,6 @@
         "~/.emacs.d/elpa/yasnippet-20140911.312/snippets"
         ))
 (yas-global-mode 1)
-
 
 
 ;;; プレフィクスキーはC-z
@@ -508,3 +501,12 @@
 
 (require 'smooth-scroll)
 (smooth-scroll-mode t)
+
+(require 'typescript)
+(add-to-list 'auto-mode-alist '("\.ts$" . typescript-mode))
+
+(defun typescript-mode-init () 
+  (set (make-local-variable 'compile-command) 
+       (format "tsc -sourcemap %s" 
+	       (file-name-nondirectory (buffer-file-name))))) 
+(add-hook 'typescript-mode-hook 'typescript-mode-init) 
