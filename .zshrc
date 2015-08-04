@@ -28,7 +28,7 @@ RPROMPT='[%n@%m]'
 
 alias u="cd ../"
 alias ls="ls -gohvBG"
-alias emacs="emacs-24.3"
+alias emacs="emacs-24.5"
 #cd `cat ~/.cudir`
 
 # 履歴ファイルの保存先
@@ -58,7 +58,7 @@ bindkey "^r" history-incremental-search-backward
 
 setopt noflowcontrol
 
-EDITOR=/usr/local/bin/emacs-24.3
+EDITOR=/usr/local/bin/emacs-24.5
 export EDITOR
 
 alias mv="mv -i"
@@ -67,3 +67,15 @@ alias cp="cp -i"
 
 export PATH=$PATH:${HOME}/software/clang+llvm-3.5.0-macosx-apple-darwin/bin
 export PATH=$PATH:/usr/local/Cellar/nmap/6.47/bin
+export PATH=$PATH:/usr/local/Cellar/binutils/2.25/bin
+
+export LANG=ja_JP.UTF-8
+export XMODIFIERS=@im=uim
+export GTK_IM_MODULE=uim
+export UIM_CANDWIN_PROG="uim-candwin-gtk"
+
+fpath=($(brew --prefix)/share/zsh/site-function $fpath)
+autoload -U compinit
+compinit -u
+
+source dnvm.sh
