@@ -203,9 +203,9 @@
 
 ;; skk用設定
 (setq load-path
-      (append '("~/.emacs.d"
-		"~/.emacs.d/ddskk-15.1"
-		"~/.emacs.d/elisp/skk")
+      (append '("~/.emacs.d/ddskk-15.1"
+		"~/.emacs.d/elisp/skk"
+		"~/.emacs.d/elisp")
 		load-path))
 
 (require 'skk-setup)
@@ -468,7 +468,6 @@
 (setq use-dialog-box nil)
 (show-paren-mode t)
 
-(setq kill-whole-line t)
 (setq message-log-max 10000)
 (setq history-length 1000)
 (setq history-delete-duplicates t)
@@ -499,9 +498,6 @@
 (set-face-attribute 'which-func nil
 		    :foreground "black")
 
-(require 'smooth-scroll)
-(smooth-scroll-mode t)
-
 (require 'typescript)
 (add-to-list 'auto-mode-alist '("\.ts$" . typescript-mode))
 
@@ -510,3 +506,16 @@
        (format "tsc -sourcemap %s" 
 	       (file-name-nondirectory (buffer-file-name))))) 
 (add-hook 'typescript-mode-hook 'typescript-mode-init) 
+
+(require 'highlight-indentation)
+
+
+(require 'web-beautify) ;; Not necessary if using ELPA package
+(eval-after-load 'js2-mode
+  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+(eval-after-load 'json-mode
+  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+(eval-after-load 'sgml-mode
+  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+(eval-after-load 'css-mode
+  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
