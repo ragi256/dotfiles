@@ -78,7 +78,7 @@ compinit -u
 source dnvm.sh
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/usr/local/bin:$PATH"
-export HOMEBREW_GITHUB_API_TOKEN="6b7617c44212e9cbfe7d4e61c1072d791e5dd650" 
+export HOMEBREW_GITHUB_API_TOKEN="" 
 
 ### Virtualenvwrapper
 if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
