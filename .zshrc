@@ -2,9 +2,6 @@ setopt auto_cd                  # ディレクトリ名と一致した場合 cd
 setopt autopushd
 setopt pushd_ignore_dups        # 同じディレクトリは追加しない
 
-#--- zsh 用の設定 ---
-. /usr/local/etc/autojump.zsh
-
 # #--- cd 時の仕掛け ---
 # function precmd () {
 #     pwd=`pwd`
@@ -58,8 +55,8 @@ bindkey "^r" history-incremental-search-backward
 
 setopt noflowcontrol
 
-EDITOR=/usr/local/bin/emacs-24.5
-export EDITOR
+
+export EDITOR=/usr/bin/vim
 
 alias mv="mv -i"
 alias cp="cp -i"
@@ -79,3 +76,19 @@ autoload -U compinit
 compinit -u
 
 source dnvm.sh
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/bin:$PATH"
+export HOMEBREW_GITHUB_API_TOKEN="6b7617c44212e9cbfe7d4e61c1072d791e5dd650" 
+
+### Virtualenvwrapper
+if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+  export WORKON_HOME=$HOME/.virtualenvs
+  source /usr/local/bin/virtualenvwrapper.sh
+fi
+
+#export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages/
+#export PYTHONPATH=$PYTHONPATH:/usr/local/Cellar/python/2.7.11/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/spearmint-1.0-py2.7.egg-info
+
+
+
+. /Users/ichinari_sato/torch/install/bin/torch-activate

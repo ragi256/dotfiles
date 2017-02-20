@@ -1,7 +1,35 @@
-(global-set-key "\C-h" 'delete-backward-char)
-(cond (window-system
-       (global-unset-key "\C-z")
-       ))
+(package-initialize)
+(require 'use-package)
+
+(require 'init-loader)
+(init-loader-load "~/.emacs.d/inits")
+
+
+(put 'upcase-region 'disabled nil) ;; C-x C-uで選択領域を大文字
+(put 'downcase-region 'disabled nil) ;; C-x C-lで選択領域を小文字, 
+(delete-selection-mode t) ;; リージョンを削除できるように
+
+(menu-bar-mode 0) ;; メニュバーをoff
+(tool-bar-mode 0) ;; ツールバーをoff
+(line-number-mode 1) ;; カーソルの行番号をモードラインに表示
+(column-number-mode 1) ;; カーソルの列番号をモードラインに表示
+(setq inhibit-startup-message t) ;;
+(fset 'yes-or-no-p 'y-or-n-p) ;; yes or no をすべて yn へ
+(setq use-dialog-box nil) ;; ダイアログ(ポップアップみたいな)を作らない
+(show-paren-mode t) ;; 閉じ括弧に反応して開き括弧を光らせる
+(which-function-mode 1) ;; 現在の関数名をモードラインに表示
+(setq-default indent-tabs-mode nil)
+
+(setq message-log-max 10000) ;; 
+(setq history-length 1000) ;; 
+(setq history-delete-duplicates t) ;;  
+
+
+(bind-keys*
+ ("C-h" . delete-backward-char)
+ ("C-x C-j". skk-mode)
+ ("C-t" . rotate-layout)
+ ("M-t" . rotate-window))
 
 (add-to-list 'default-frame-alist '(font . "ricty-13.5"))
 
@@ -10,39 +38,13 @@
  (set-face-attribute 'default nil
              :family "Ricty" ;; font
              :height 130)  ;; font size
-;; ;; 日本語
-;; (set-fontset-font
-;;  nil 'japanese-jisx0208
-;; ;; (font-spec :family "Hiragino Mincho Pro")) ;; font
-;;   (font-spec :family "Hiragino Kaku Gothic ProN")) ;; font
-;; ;; 半角と全角の比を1:2にしたければ
-;; (setq face-font-rescale-alist
-;; ;;        '((".*Hiragino_Mincho_pro.*" . 1.0)))
-;;       '((".*Hiragino_Kaku_Gothic_ProN.*" . 1.0)));; Mac用フォント設定
-;; (set-language-environment 'Japanese)
-;; (prefer-coding-system 'utf-8)
 
-;;; YaTeX
-;; yatex-mode の起動
-
-;; 野鳥が置いてある directry の load-path 設定
-;; default で load-path が通っている場合は必要ありません
-;;(setq load-path
-;;      (cons (expand-file-name
-;;             "~/share/emacs/site-lisp/yatex") load-path))
+(require 'popwin)
+(popwin-mode 1)
+(push '("^\\*helm" :regexp t :height 10 :position :bottom) popwin:special-display-config)
 
 
-;; 文章作成時の日本語文字コード
-;; 0: no-converion
-;; 1: Shift JIS (windows & dos default)
-;; 2: ISO-2022-JP (other default)
-;; 3: EUC
-;; 4: UTF-8
-;;(setq YaTeX-kanji-code 4)
-;; C-c tj でpdfまで作成。platex2pdfにスクリプトが入ってる。＠yatex
-;;(setq tex-command "sh ~/.platex2pdf")
-
-;; flymake 
+;; flymake --------------------
 (require 'flymake)
 
 ;; c++のflymake
@@ -52,27 +54,10 @@
          (local-file  (file-relative-name
                        temp-file
                        (file-name-directory buffer-file-name))))
+
     (list "g++" (list "-std=c++11" "-Wall" "-Wextra" "-fsyntax-only" "-Wno-sign-compare" local-file))))
-;    (list "g++" (list "-Wall" "-Wextra" local-file))))
 
 (push '("\\.cpp$" flymake-cc-init) flymake-allowed-file-name-masks)
-
-;; ;;; flymake for python
-;; (add-hook 'find-file-hook 'flymake-find-file-hook)
-;; (when (load "flymake" t)
-;;   (defun flymake-pyflakes-init ()
-;;     (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                        'flymake-create-temp-inplace))
-;;            (local-file (file-relative-name
-;;                         temp-file
-;;                         (file-name-directory buffer-file-name))))
-;;       (list "pycheckers.sh"  (list local-file))))
-;;   (add-to-list 'flymake-allowed-file-name-masks
-;; ;;               '("\\.py\\'" flymake-pyflakes-init)))
-;;                '("\\.py$" flymake-pyflakes-init)))
-;; (load-library "flymake-cursor")
-;; (global-set-key [f10] 'flymake-goto-prev-error)
-;; (global-set-key [f11] 'flymake-goto-next-error)
 
 ;;C++ style
 (add-hook 'c++-mode-hook
@@ -94,18 +79,12 @@
               "LANG=C"
               "check-syntax")))
 
-
-;;flymakeのエラー行表示色
-;;(set-face-background 'flymake-errline "red3")
-;;(set-face-background 'flymake-warnline "orange3")
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(flymake-warnline ((((class color)) (:background "Gray20")))))
-
 
 ;; flymake を使えない場合をチェック
 (defadvice flymake-can-syntax-check-file
@@ -131,50 +110,17 @@
   (setq flymake-check-was-interrupted t))
 (ad-activate 'flymake-post-syntax-check)
 
+(setq flycheck-display-errors-function 'flycheck-display-error-messages-unless-error-list)
 
-;; make the fringe stand out from the background
-(setq solarized-distinct-fringe-background t)
-
-;; make the modeline high contrast
-(setq solarized-high-contrast-mode-line t)
-
-;; Use less bolding
-(setq solarized-use-less-bold t)
-
-;; Use more italics
-(setq solarized-use-more-italic t)
-
-;; Use less colors for indicators such as git:gutter, flycheck and similar.
-(setq solarized-emphasize-indicators nil)
-
-;; Don't change size of org-mode headlines (but keep other size-changes)
-(setq solarized-scale-org-headlines nil)
-
-;; Avoid all font-size changes
-(setq solarized-height-minus-1 1)
-(setq solarized-height-plus-1 1)
-(setq solarized-height-plus-2 1)
-(setq solarized-height-plus-3 1)
-(setq solarized-height-plus-4 1)
-
-;(load-theme 'solarized-dark t)
+;; flymake --------------------
 
 
-
-;;; リージョンを削除できるように
-(delete-selection-mode t)
-
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize)
+;; slime --------------------
 
 (setf inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
 (require 'slime-autoloads)
 (slime-setup '(slime-repl))
 
-(require 'popwin)
-(popwin-mode 1)
 ;; Apropos
 (push '("*slime-apropos*") popwin:special-display-config)
 ;; Macroexpand
@@ -192,13 +138,13 @@
 ;; Connections
 (push '(slime-connection-list-mode) popwin:special-display-config)
 
-(push '("^\\*helm" :regexp t :height 10 :position :bottom) popwin:special-display-config)
-
 (require 'ac-slime)
 (add-hook 'slime-mode-hook 'set-up-slime-ac)
 (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'slime-repl-mode))
+
+;; slime --------------------
 
 
 ;; skk用設定
@@ -215,8 +161,6 @@
 (setq skk-server-portnum 1178)
 (setq skk-server-host "localhost")
 
-(global-set-key "\C-x\C-j" 'skk-mode)
-
 (add-hook 'isearch-mode-hook
           (function (lambda ()
                       (and (boundp 'skk-mode) skk-mode
@@ -229,32 +173,22 @@
 
 (setq mac-pass-control-to-system nil)
 
+;; (require 'epc)
+
+;; python --------------------
 
 (add-to-list 'load-path "~/.emacs.d/jedi/emacs-deferred")
 (add-to-list 'load-path "~/.emacs.d/jedi/emacs-epc")
 (add-to-list 'load-path "~/.emacs.d/jedi/emacs-ctable")
 (add-to-list 'load-path "~/.emacs.d/jedi/emacs-jedi")
 (require 'auto-complete-config)
-;;(require 'python)
-
-;;(add-hook 'python-mode-hook 'jedi:ac-setup)
+(require 'python)
+(require 'jedi)
+(add-hook 'python-mode-hook 'jedi:ac-setup)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:setup-keys t)
-(require 'jedi)
-;;(define-key python-mode-map (kbd "<C-tab>") 'jedi:complete)
+(define-key python-mode-map (kbd "<C-tab>") 'jedi:complete)
 (setq jedi:complete-on-dot t)
-
-;; tex用 auto-complete
-(require 'auto-complete)
-(add-to-list 'ac-modes 'tex-mode)
-(add-to-list 'ac-modes 'latex-mode)
-(global-auto-complete-mode t)
-
-;; tex-mode
-(setq auto-mode-alist 
-      (cons (cons "\\.tex$" 'tex-mode) auto-mode-alist))
-(add-hook 'tex-mode 'auto-complete-mode)
-(autoload 'yatex-mode "latex" "Yet Another LaTeX mode" t)
 
 ;; pythonのflymake
 (require 'flycheck-pyflakes)
@@ -262,36 +196,7 @@
 ;; python pep8
 (add-hook 'before-save-hook 'py-autopep8-before-save)
 
-;; hiwin-mode アクティブなウィドウを目立たせる
-;;(require 'hiwin)
-;;(hiwin-mode)
-;; col-highlightとhi-line+でいらなくなったかも
-
-(iswitchb-mode 1)
-
-;; C-, と C-.でバッファを巡回する
-(setq my-ignore-buffer-list
-      '("*Help*" "*Compile-Log*" "*Mew completions*" "*Completions*"
-        "*Shell Command Output*" "*Apropos*" "*Buffer List*"))
-
-(defun my-visible-buffer (blst)
-  (let ((bufn (buffer-name (car blst))))
-    (if (or (= (aref bufn 0) ? ) (member bufn my-ignore-buffer-list))
-        (my-visible-buffer (cdr blst)) (car blst))))
-
-(defun my-grub-buffer ()
-  (interactive)
-  (switch-to-buffer (my-visible-buffer (reverse (buffer-list)))))
-
-(defun my-bury-buffer ()
-  (interactive)
-  (bury-buffer)
-  (switch-to-buffer (my-visible-buffer (buffer-list))))
-
-(global-set-key [?\C-,] 'my-grub-buffer)
-(global-set-key [?\C-.] 'my-bury-buffer)
-
-
+;; python --------------------
 
 (require 'col-highlight)
 (toggle-highlight-column-when-idle t)
@@ -300,10 +205,6 @@
 (require 'hl-line+)
 (toggle-hl-line-when-idle t)
 (hl-line-when-idle-interval 10)
-
-;; 許されざるText is read-onlyを回避する
-(defadvice eshell-get-old-input (after eshell-read-only-korosu activate)
-  (setq ad-return-value (substring-no-properties ad-return-value)))
 
 
 ;; 各種モードで折りたたみモードをONに
@@ -332,16 +233,13 @@
           '(lambda ()
       (hs-minor-mode 1)))
 
-;;(setq dired-listing-switches (purecopy "-gohvBG"))
 
-(require 'rotate)
-(global-set-key (kbd "C-t") 'rotate-layout)
-(global-set-key (kbd "M-t") 'rotate-window)
 
-(eval-after-load 'flycheck
-  '(custom-set-variables
-   '(flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
 
+
+;; 許されざるText is read-onlyを回避する
+(defadvice eshell-get-old-input (after eshell-read-only-korosu activate)
+  (setq ad-return-value (substring-no-properties ad-return-value)))
 
 (defun eshell/clear ()
  "Clear the current buffer, leaving one prompt at the top."
@@ -356,75 +254,46 @@
 (setq twittering-icon-mode t)
 (setq twittering-timer-interval 45)
 
-;; (require 'w3m)
-;; (require 'w3m-load)
-;; (require 'search-web)
-;; (require 'dic-lookup-w3m)
 
-(require 'init-loader)
-;(setq init-loader-show-log-after-init nil)
-(init-loader-load "~/.emacs.d/inits")
 
-(require 'smart-compile)
-(global-set-key (kbd "C-x c") 'smart-compile)
-(global-set-key (kbd "C-x C-x") (kbd "C-x c C-m"))
+;; (require 'smart-compile)
+;; (global-set-key (kbd "C-x c") 'smart-compile)
+;; (global-set-key (kbd "C-x C-x") (kbd "C-x c C-m"))
+;; (setq smart-compile-alist
+;;       (append
+;;        '(("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f; ./a.out"))
+;;        smart-compile-alist))
 
-(setq smart-compile-alist
-      (append
-       '(("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f; ./a.out"))
-       smart-compile-alist))
+(use-package smart-compile
+  :config (setq smart-compile-alist
+		(append
+		 '(("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f; ./a.out"))
+		 smart-compile-alist))
+  :bind (("C-x c" . smart-compile)))
 
-;; yasnippet.el----------------------------------
+
+
+
+;; ;; yasnippet.el----------------------------------
 (require 'yasnippet)
 (setq yas-snippet-dirs
       '("~/.emacs.d/mySnippets"
-        "~/.emacs.d/elpa/yasnippet-20140911.312/snippets"
+        "~/.emacs.d/elpa/yasnippet-20160403.830/snippets"
         ))
 (yas-global-mode 1)
 
-
-;;; プレフィクスキーはC-z
-(setq elscreen-prefix-key (kbd "C-z"))
-(elscreen-start)
-;;; タブの先頭に[X]を表示しない
-(setq elscreen-tab-display-kill-screen nil)
-;;; header-lineの先頭に[<->]を表示しない
-(setq elscreen-tab-display-control nil)
-;;; バッファ名・モード名からタブに表示させる内容を決定する(デフォルト設定)
-(setq elscreen-buffer-to-nickname-alist
-      '(("^dired-mode$" .
-         (lambda ()
-           (format "Dired(%s)" dired-directory)))
-        ("^Info-mode$" .
-         (lambda ()
-           (format "Info(%s)" (file-name-nondirectory Info-current-file))))
-        ("^mew-draft-mode$" .
-         (lambda ()
-           (format "Mew(%s)" (buffer-name (current-buffer)))))
-        ("^mew-" . "Mew")
-        ("^irchat-" . "IRChat")
-        ("^liece-" . "Liece")
-        ("^lookup-" . "Lookup")))
-(setq elscreen-mode-to-nickname-alist
-      '(("[Ss]hell" . "shell")
-        ("compilation" . "compile")
-        ("-telnet" . "telnet")
-        ("dict" . "OnlineDict")
-        ("*WL:Message*" . "Wanderlust")))
-
+;; (use-package yasnippet
+;;   :config
+;;   ((setq yas-snippet-dirs
+;; 	 '("~/.emacs.d/mySnippets"
+;; 	   "~/.emacs.d/elpa/yasnippet-20160403.830/snippets" ))
+;;    (yas-global-mode 1)))
 
 (require 'clang-format)
 (global-set-key [C-M-tab] 'clang-format-region)
 
-(require 'open-junk-file)
-(setq open-junk-file-format "~/workspace/junk/%y%m%d/%H%M%S.")
-(global-set-key (kbd "C-x C-z") 'open-junk-file)
 
-
-;; (if window-system (progn
-;;     (set-frame-parameter nil 'alpha 80) ;透明度
-;;     ))
-
+;; GUI Emacsの透明度指定
 (add-to-list 'default-frame-alist '(alpha . (0.75 0.75)))
 
 ;; 透明度を変更するコマンド M-x set-alpha
@@ -435,16 +304,6 @@
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
 
-(require 'flymake-coffee)
-(add-hook 'coffee-mode-hook 'flymake-coffee-load)
-
-(defun coffee-custom ()
-  "coffee-mode-hook"
- (set (make-local-variable 'tab-width) 2)
- (setq coffee-tab-width 2))
-
-(add-hook 'coffee-mode-hook
-  '(lambda() (coffee-custom)))
 
 ;; エスケープシーケンスを処理
 ;; http://d.hatena.ne.jp/hiboma/20061031/1162277851
@@ -459,20 +318,6 @@
                               eshell-last-output-end))
 (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
 
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(line-number-mode 1)
-(column-number-mode 1)
-(setq inhibit-startup-message t)
-(fset 'yes-or-no-p 'y-or-n-p)
-(setq use-dialog-box nil)
-(show-paren-mode t)
-
-(setq message-log-max 10000)
-(setq history-length 1000)
-(setq history-delete-duplicates t)
-
-(which-function-mode 1)
 
 (require 'lispxmp)
 (require 'paredit)
@@ -490,24 +335,14 @@
 
 (require 'volatile-highlights)
 
-;; (require 'powerline)
-;; (powerline-default-theme)
-
-;;(global-set-key (kbd "C-q") 'helm-mini)
-
 (set-face-attribute 'which-func nil
 		    :foreground "black")
 
-(require 'typescript)
-(add-to-list 'auto-mode-alist '("\.ts$" . typescript-mode))
 
-(defun typescript-mode-init () 
-  (set (make-local-variable 'compile-command) 
-       (format "tsc -sourcemap %s" 
-	       (file-name-nondirectory (buffer-file-name))))) 
-(add-hook 'typescript-mode-hook 'typescript-mode-init) 
+
 
 (require 'highlight-indentation)
+
 
 
 (require 'web-beautify) ;; Not necessary if using ELPA package
@@ -519,3 +354,40 @@
   '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
 (eval-after-load 'css-mode
   '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+
+
+(setq exec-path (append exec-path '("/usr/local/share/npm/bin")))
+(setq flymake-log-level 3)
+
+(flycheck-add-next-checker 'javascript-jshint
+			   'javascript-gjslint)
+
+
+;; ;; dired系
+;; wdired切り替えをrでできるように
+;; デフォでdired-xに
+;; dired-x時にSKKできるように
+(use-package dired
+  :defer t
+  :init (bind-keys :map dired-mode-map
+		   ("r" . wdired-change-to-wdired-mode))
+  :config (add-hook 'dired-load-hook
+		    (lambda ()
+		      (load "dired-x")
+		      (global-set-key "\C-x\C-j" 'skk-mode))))
+;;(setq dired-listing-switches (purecopy "-gohvBG"))
+
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)
+	 ("C-x M-g" . magit-dispatch-popup))
+  :init
+  :config)
+
+(use-package open-junk-file
+  :config (setq open-junk-file-format "~/workspace/junk/%y-%m-%d.")
+  :bind (("C-x C-z" . open-junk-file))
+  )
+
+(add-hook 'commint-mode-hook
+                    (lambda () (setenv "PAGER" "cat")))
