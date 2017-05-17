@@ -1,9 +1,7 @@
-(package-initialize)
-(require 'use-package)
-
 (require 'init-loader)
 (init-loader-load "~/.emacs.d/inits")
 
+(require 'use-package)
 
 (put 'upcase-region 'disabled nil) ;; C-x C-uで選択領域を大文字
 (put 'downcase-region 'disabled nil) ;; C-x C-lで選択領域を小文字, 
@@ -147,31 +145,31 @@
 ;; slime --------------------
 
 
-;; skk用設定
-(setq load-path
-      (append '("~/.emacs.d/ddskk-15.1"
-		"~/.emacs.d/elisp/skk"
-		"~/.emacs.d/elisp")
-		load-path))
+;; ;; skk用設定
+;; (setq load-path
+;;       (append '("~/.emacs.d/ddskk-15.1"
+;; 		"~/.emacs.d/elisp/skk"
+;; 		"~/.emacs.d/elisp")
+;; 		load-path))
 
-(require 'skk-setup)
-(require 'skk-study)
+;; (require 'skk-setup)
+;; (require 'skk-study)
 
-;;skk-server AquaSKK
-(setq skk-server-portnum 1178)
-(setq skk-server-host "localhost")
+;; ;;skk-server AquaSKK
+;; (setq skk-server-portnum 1178)
+;; (setq skk-server-host "localhost")
 
-(add-hook 'isearch-mode-hook
-          (function (lambda ()
-                      (and (boundp 'skk-mode) skk-mode
-                           (skk-isearch-mode-setup)))))
-(add-hook 'isearch-mode-end-hook
-          (function (lambda ()
-                      (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
-                      (and (boundp 'skk-mode-invoked) skk-mode-invoked
-                           (skk-set-cursor-properly)))))
+;; (add-hook 'isearch-mode-hook
+;;           (function (lambda ()
+;;                       (and (boundp 'skk-mode) skk-mode
+;;                            (skk-isearch-mode-setup)))))
+;; (add-hook 'isearch-mode-end-hook
+;;           (function (lambda ()
+;;                       (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
+;;                       (and (boundp 'skk-mode-invoked) skk-mode-invoked
+;;                            (skk-set-cursor-properly)))))
 
-(setq mac-pass-control-to-system nil)
+;; (setq mac-pass-control-to-system nil)
 
 ;; (require 'epc)
 
