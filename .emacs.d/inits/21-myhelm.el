@@ -41,3 +41,6 @@
                         (substring input-pattern 1)
                       (concat ".*" input-pattern)))))))
 
+
+(setq Buffer-menu-buffer+size-width 50) ;; default is 26
+(setq helm-buffer-max-length 50)

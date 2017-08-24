@@ -111,3 +111,7 @@ export CPLUS_INCLUDE_PATH
 
 # reverseでないi-searchの有効化　ctrl+s
 stty stop undef
+
+alias lab="envchain jupyter jupyter lab --notebook-dir=/${HOME}/workspace/notebooks"
+alias note="envchain jupyter jupyter notebook --notebook-dir=/${HOME}/workspace/notebooks"
+export PATH=$HOME/Library/Android/sdk/platform-tools:$PATH

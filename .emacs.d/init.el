@@ -1,7 +1,14 @@
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
+
 (require 'init-loader)
 (init-loader-load "~/.emacs.d/inits")
 
 (require 'use-package)
+
+(load-theme 'solarized-dark t)
 
 (put 'upcase-region 'disabled nil) ;; C-x C-uで選択領域を大文字
 (put 'downcase-region 'disabled nil) ;; C-x C-lで選択領域を小文字, 
@@ -33,7 +40,7 @@
 
 ;; Mac用フォント設定
  ;; 英語
- (set-face-attribute 'default nil
+ (set-face-attribute 'default nil'
              :family "Ricty" ;; font
              :height 130)  ;; font size
 
@@ -262,6 +269,11 @@
 ;;        '(("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f; ./a.out"))
 ;;        smart-compile-alist))
 
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
+
 (use-package smart-compile
   :config (setq smart-compile-alist
 		(append
@@ -357,8 +369,7 @@
 (setq exec-path (append exec-path '("/usr/local/share/npm/bin")))
 (setq flymake-log-level 3)
 
-(flycheck-add-next-checker 'javascript-jshint
-			   'javascript-gjslint)
+;;(flycheck-add-next-checker 'javascript-jshint)
 
 
 ;; ;; dired系
@@ -389,3 +400,17 @@
 
 (add-hook 'commint-mode-hook
                     (lambda () (setenv "PAGER" "cat")))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
+ '(package-selected-packages
+   (quote
+    (psession rspec-mode coffee-mode flymake-haml haml-mode elscreen projectile-rails yasnippet web-beautify volatile-highlights uzumaki use-package twittering-mode swbuff solarized-theme search-web rotate rainbow-delimiters quickrun py-autopep8 popwin pep8 paredit open-junk-file markdown-mode magit lispxmp jedi init-loader hiwin highlight-indentation helm flymake-cursor flycheck-pyflakes flycheck-pos-tip exec-path-from-shell dic-lookup-w3m crosshairs color-theme codic clang-format auto-complete-clang-async auto-complete-clang anzu anything ac-slime 2048-game 0blayout)))
+ '(safe-local-variable-values
+   (quote
+    ((TeX-master . t)
+     (TeX-master . "main")
+     (TeX-master . "../main")))))

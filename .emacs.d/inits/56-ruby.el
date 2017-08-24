@@ -1,0 +1,6 @@
+(require 'projectile)
+(projectile-global-mode)
+(require 'projectile-rails)
+(add-hook 'projectile-mode-hook 'projectile-rails-on)
+(setq projectile-enable-caching t)
+(defun ruby-mode-set-encoding () nil)

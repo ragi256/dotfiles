@@ -92,3 +92,6 @@ fi
 
 
 . /Users/ichinari_sato/torch/install/bin/torch-activate
+
+alias lab="envchain jupyter jupyter lab --notebook-dir=/${HOME}/workspace/notebooks"
+
