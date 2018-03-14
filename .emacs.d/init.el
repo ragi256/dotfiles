@@ -1,4 +1,3 @@
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -6,9 +5,10 @@
 (package-initialize)
 
 (require 'init-loader)
+(require 'use-package)
 (init-loader-load "~/.emacs.d/inits")
 
-(require 'use-package)
+
 
 (put 'upcase-region 'disabled nil) ;; C-x C-uで選択領域を大文字
 (put 'downcase-region 'disabled nil) ;; C-x C-lで選択領域を小文字, 
@@ -182,18 +182,18 @@
 
 ;; python --------------------
 
-(add-to-list 'load-path "~/.emacs.d/jedi/emacs-deferred")
-(add-to-list 'load-path "~/.emacs.d/jedi/emacs-epc")
-(add-to-list 'load-path "~/.emacs.d/jedi/emacs-ctable")
-(add-to-list 'load-path "~/.emacs.d/jedi/emacs-jedi")
-(require 'auto-complete-config)
-(require 'python)
-(require 'jedi)
-(add-hook 'python-mode-hook 'jedi:ac-setup)
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:setup-keys t)
-(define-key python-mode-map (kbd "<C-tab>") 'jedi:complete)
-(setq jedi:complete-on-dot t)
+;; (add-to-list 'load-path "~/.emacs.d/jedi/emacs-deferred")
+;; (add-to-list 'load-path "~/.emacs.d/jedi/emacs-epc")
+;; (add-to-list 'load-path "~/.emacs.d/jedi/emacs-ctable")
+;; (add-to-list 'load-path "~/.emacs.d/jedi/emacs-jedi")
+;; (require 'auto-complete-config)
+;; (require 'python)
+;; (require 'jedi)
+;; (add-hook 'python-mode-hook 'jedi:ac-setup)
+;; (add-hook 'python-mode-hook 'jedi:setup)
+;; (setq jedi:setup-keys t)
+;; (define-key python-mode-map (kbd "<C-tab>") 'jedi:complete)
+;; (setq jedi:complete-on-dot t)
 
 ;; pythonのflymake
 (require 'flycheck-pyflakes)
@@ -210,7 +210,6 @@
 (require 'hl-line+)
 (toggle-hl-line-when-idle t)
 (hl-line-when-idle-interval 10)
-
 
 ;; 各種モードで折りたたみモードをONに
 ;; C coding style
@@ -238,10 +237,6 @@
           '(lambda ()
       (hs-minor-mode 1)))
 
-
-
-
-
 ;; 許されざるText is read-onlyを回避する
 (defadvice eshell-get-old-input (after eshell-read-only-korosu activate)
   (setq ad-return-value (substring-no-properties ad-return-value)))
@@ -252,14 +247,10 @@
  (let ((inhibit-read-only t))
    (erase-buffer)))
 
-
-
 (require 'twittering-mode)
 (setq twittering-mode-auth-method 'xauth)
 (setq twittering-icon-mode t)
 (setq twittering-timer-interval 45)
-
-
 
 ;; (require 'smart-compile)
 ;; (global-set-key (kbd "C-x c") 'smart-compile)
@@ -275,9 +266,6 @@
 		 '(("\\.[Cc]+[Pp]*\\'" . "g++ -O2 %f; ./a.out"))
 		 smart-compile-alist))
   :bind (("C-x c" . smart-compile)))
-
-
-
 
 ;; ;; yasnippet.el----------------------------------
 (require 'yasnippet)
@@ -308,8 +296,6 @@
   (interactive "nAlpha: ")
   (set-frame-parameter nil 'alpha (cons alpha-num '(90))))
 
-
-
 ;; エスケープシーケンスを処理
 ;; http://d.hatena.ne.jp/hiboma/20061031/1162277851
 (autoload 'ansi-color-for-comint-mode-on "ansi-color"
@@ -330,41 +316,35 @@
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 
-(require 'exec-path-from-shell)
-(exec-path-from-shell-initialize)
+;;(require 'exec-path-from-shell)
+;;(exec-path-from-shell-initialize)
 
-(require 'anzu)
-(global-anzu-mode +1)
-(set-face-attribute 'anzu-mode-line nil
-                    :foreground "firebrick" :weight 'bold)
+;; (require 'anzu)
+;; (global-anzu-mode +1)
+;; (set-face-attribute 'anzu-mode-line nil
+;;                     :foreground "firebrick" :weight 'bold)
 
-(require 'volatile-highlights)
+;; (require 'volatile-highlights)
 
-(set-face-attribute 'which-func nil
-		    :foreground "black")
+;; (set-face-attribute 'which-func nil
+;; 		    :foreground "black")
 
-
-
-
-(require 'highlight-indentation)
-
-
-
-(require 'web-beautify) ;; Not necessary if using ELPA package
-(eval-after-load 'js2-mode
-  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
-(eval-after-load 'json-mode
-  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
-(eval-after-load 'sgml-mode
-  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
-(eval-after-load 'css-mode
-  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+;; (require 'highlight-indentation)
+;; (require 'web-beautify) ;; Not necessary if using ELPA package
+;; (eval-after-load 'js2-mode
+;;   '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+;; (eval-after-load 'json-mode
+;;   '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+;; (eval-after-load 'sgml-mode
+;;   '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+;; (eval-after-load 'css-mode
+;;   '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
 
 
-(setq exec-path (append exec-path '("/usr/local/share/npm/bin")))
-(setq flymake-log-level 3)
+;; ;;(setq exec-path (append exec-path '("/usr/local/share/npm/bin")))
+;; (setq flymake-log-level 3)
 
-(flycheck-add-next-checker 'javascript-jshint)
+;; (flycheck-add-next-checker 'javascript-jshint)
 
 
 ;; ;; dired系
@@ -395,3 +375,17 @@
 
 (add-hook 'commint-mode-hook
                     (lambda () (setenv "PAGER" "cat")))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-display-errors-function (function flycheck-pos-tip-error-messages))
+ '(package-selected-packages
+   (quote
+    (flymake-coffee tss typescript flycheck-rust rust-mode yasnippet web-beautify volatile-highlights uzumaki use-package twittering-mode swbuff search-web rotate rainbow-delimiters quickrun py-autopep8 popwin pep8 paredit open-junk-file markdown-mode magit lispxmp jedi init-loader hiwin highlight-indentation helm flymake-cursor flycheck-pyflakes flycheck-pos-tip exec-path-from-shell dic-lookup-w3m crosshairs codic clang-format auto-complete-clang-async auto-complete-clang anzu anything ac-slime)))
+ '(safe-local-variable-values
+   (quote
+    ((TeX-master . t)
+     (TeX-master . "main")
+     (TeX-master . "../main")))))

@@ -1,6 +1,4 @@
 ;;; 52-typescript.el ---
-
-
 (require 'typescript)
 (add-to-list 'auto-mode-alist '("\.ts$" . typescript-mode))
 
